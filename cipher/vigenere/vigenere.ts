@@ -8,7 +8,7 @@ interface SquareJson {
 
 const defaultSquare = (squareJson as unknown as SquareJson).default
 
-const encrypt = (
+export const encrypt = (
   plainText: string,
   key: string,
   square: Square = defaultSquare,
@@ -25,7 +25,7 @@ const encrypt = (
   return encryptedText
 }
 
-const decrypt = (
+export const decrypt = (
   cipherText: string,
   key: string,
   square: Square = defaultSquare,
@@ -42,12 +42,3 @@ const decrypt = (
   const plainText = plainArray.join('')
   return plainText
 }
-
-const args = process.argv.slice(2)
-const plainText = args[0]
-const key = args[1]
-const encryptedText = encrypt(plainText, key)
-const decryptedText = decrypt(encryptedText, key)
-console.log(`plain: ${plainText}`)
-console.log(`encrypt: ${encryptedText}`)
-console.log(`decrypt: ${decryptedText}`)
