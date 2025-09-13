@@ -1,7 +1,11 @@
 import * as squareJson from './square.json' with { type: 'json' }
 
-type Square = typeof squareJson
-type SquareKey = keyof Square
+interface Square {
+  key: string[]
+  sub: {
+    [key: string]: string[]
+  }
+}
 interface SquareJson {
   default: Square
 }
@@ -12,31 +16,35 @@ export const encrypt = (
   plainText: string,
   key: string,
   square: Square = defaultSquare,
-  base: SquareKey = 'a'
 ): string => {
-  const plainArray = [...plainText] as SquareKey[]
+  const plainArray = [...plainText]
   const cipherArray = plainArray.map((char, index) => {
+    // 鍵は平文が終わるまで繰り返されるため
     const keyChar = key.charAt(index % key.length)
-    const baseIndex = square[base].indexOf(keyChar)
-    const cipherChar = square[char][baseIndex]
+
+    // 鍵に対応するアルファベットを返す
+    const subIndex = square.key.indexOf(keyChar)
+    const cipherChar = square.sub[char][subIndex]
     return cipherChar
   })
-  const encryptedText = cipherArray.join('')
-  return encryptedText
+  const cipherText = cipherArray.join('')
+  return cipherText
 }
 
 export const decrypt = (
   cipherText: string,
   key: string,
   square: Square = defaultSquare,
-  base: SquareKey = 'a'
 ): string => {
-  const cipherArray = [...cipherText] as SquareKey[]
+  const cipherArray = [...cipherText]
   const plainArray = cipherArray.map((char, index) => {
+    // 鍵は平文が終わるまで繰り返されるため
     const keyChar = key.charAt(index % key.length)
-    const baseIndex = square[base].indexOf(keyChar)
-    for (const [k, subArray] of Object.entries(square)) {
-      if (subArray[baseIndex] === char) return k
+
+    // 鍵に対応する置換前のアルファベットを返す
+    const subIndex = square.key.indexOf(keyChar)
+    for (const [subHead, subBody] of Object.entries(square.sub)) {
+      if (subBody[subIndex] === char) return subHead
     }
   })
   const plainText = plainArray.join('')
