@@ -2,8 +2,10 @@
 
 ## 使い方
 
+### 暗号化
+
 ```bash
-node vigenere.ts PLAIN_TEXT KEY
+node encrypt.ts PLAIN_TEXT KEY
 ```
 
 |||
@@ -11,14 +13,25 @@ node vigenere.ts PLAIN_TEXT KEY
 |`PLAIN_TEXT`|平文|
 |`KEY`|鍵|
 
-## 実行例
+### 復号
 
 ```bash
-node vigenere.ts face face
+node decrypt.ts CIIPHER_TEXT KEY
+```
+
+|||
+|-|-|
+|`CIPHER_TEXT`|暗号文|
+|`KEY`|鍵|
+
+## 実行例
+
+```
+node encrypt.ts connect yufxbxp
+aiskfzi
 ```
 
 ```
-plain: face
-encrypt: kaei
-decrypt: face
+node decrypt.ts aiskfzi yufxbxp
+connect
 ```
