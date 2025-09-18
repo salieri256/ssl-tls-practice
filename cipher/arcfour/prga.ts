@@ -20,3 +20,20 @@ export const generateRandomArray = (
   }
   return stream
 }
+
+export const generateRandomStream = function* (
+  rS: ReadonlyByteArray,
+) {
+  const N = 256
+  const S = new Uint8Array(rS)
+  let i = 0
+  let j = 0
+  while (true) {
+    i = (i + 1) % N
+    j = (j + S[i]) % N
+    swap(S, i, j)
+    const t = (S[i] + S[j]) % N
+    const K = S[t]
+    yield K
+  }
+}

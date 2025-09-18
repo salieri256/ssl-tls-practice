@@ -1,6 +1,6 @@
 import type { ReadonlyByteArray } from './bytearray.ts'
 import { ksa } from './ksa.ts'
-import { generateRandomArray } from './prga.ts'
+import { generateRandomArray, generateRandomStream } from './prga.ts'
 import { xor } from './xor.ts'
 
 const byteToString = (
@@ -43,6 +43,15 @@ const generateRandomArrayFromKey = (
   return random
 }
 
+const generateRandomStreamFromKey = (
+  key: string,
+) => {
+  const keybyte = stringToByte(key)
+  const S = ksa(keybyte)
+  const stream = generateRandomStream(S)
+  return stream
+}
+
 export const encryptStringToHex = (
   plaintext: string,
   key: string,
@@ -52,6 +61,20 @@ export const encryptStringToHex = (
   const cipherbyte = xor(plainbyte, random)
   const hexString = byteToHexString(cipherbyte)
   return hexString
+}
+
+export const generateEncryptStream = function* (
+  key: string,
+) {
+  const stream = generateRandomStreamFromKey(key)
+  let hexString = ''
+  while (true) {
+    const plaintext: string = yield hexString
+    const [plainbyte, ..._] = stringToByte(plaintext)
+    const random = stream.next().value
+    const cipherbyte = plainbyte ^ random
+    hexString = byteToHexString(new Uint8Array([cipherbyte]))
+  }
 }
 
 export const decryptHexToString = (
