@@ -37,8 +37,7 @@ const generateRandomArrayFromKey = (
   key: string,
   length: number,
 ): ReadonlyByteArray => {
-  const textEncoder = new TextEncoder()
-  const keybyte = textEncoder.encode(key)
+  const keybyte = stringToByte(key)
   const S = ksa(keybyte)
   const random = generateRandomArray(S, length)
   return random
