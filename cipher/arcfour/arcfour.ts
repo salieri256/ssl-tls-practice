@@ -1,6 +1,6 @@
 import type { ReadonlyByteArray } from './bytearray.ts'
 import { ksa } from './ksa.ts'
-import { prga } from './prga.ts'
+import { generateRandomArray } from './prga.ts'
 import { xor } from './xor.ts'
 
 const byteToString = (
@@ -33,14 +33,14 @@ const hexStringToByte = (
   return byte
 }
 
-const generatePseudoRandom = (
+const generateRandomArrayFromKey = (
   key: string,
   length: number,
 ): ReadonlyByteArray => {
   const textEncoder = new TextEncoder()
   const keybyte = textEncoder.encode(key)
   const S = ksa(keybyte)
-  const random = prga(S, length)
+  const random = generateRandomArray(S, length)
   return random
 }
 
@@ -49,7 +49,7 @@ export const encryptStringToHex = (
   key: string,
 ): string => {
   const plainbyte = stringToByte(plaintext)
-  const random = generatePseudoRandom(key, plainbyte.length)
+  const random = generateRandomArrayFromKey(key, plainbyte.length)
   const cipherbyte = xor(plainbyte, random)
   const hexString = byteToHexString(cipherbyte)
   return hexString
@@ -60,7 +60,7 @@ export const decryptHexToString = (
   key: string,
 ): string => {
   const cipherbyte = hexStringToByte(hexString)
-  const random = generatePseudoRandom(key, cipherbyte.length)
+  const random = generateRandomArrayFromKey(key, cipherbyte.length)
   const plainbyte = xor(cipherbyte, random)
   const plaintext = byteToString(plainbyte)
   return plaintext

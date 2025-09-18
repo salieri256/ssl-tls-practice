@@ -1,7 +1,7 @@
 import type { ReadonlyByteArray } from './bytearray.ts'
 import { swap } from './swap.ts'
 
-export const prga = (
+export const generateRandomArray = (
   rS: ReadonlyByteArray,
   length: number,
 ): ReadonlyByteArray => {
